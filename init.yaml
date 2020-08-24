@@ -1,0 +1,33 @@
+#正确的
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-pod
+  labels:
+    app: initmyapp
+spec:
+  initContainers:
+  - name: myapp-container
+    image: nginx
+    command:
+    - touch
+    - /opt/test
+    volumeMounts:
+    - mountPath: /opt
+      name: test-volume
+  containers:
+  - name: init-mydb
+    image: nginx
+    volumeMounts:
+    - name: test-volume
+      mountPath: /opt
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /opt/test1
+  restartPolicy: Never
+  volumes:
+  - name: test-volume
+    emptyDir: {}
+
